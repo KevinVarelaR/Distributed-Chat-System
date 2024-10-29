@@ -51,8 +51,7 @@
         size="lg"
         class="custom-button-main-menu spaced-button"
         :full-width="true"
-        :class="{ activeMainMenuOption: mainMenuSelected === 'Logout' }"
-        @click="selectMainOption('Logout')"
+        @click="showLogoutConfirm = true"
       >
         <UIcon
           name="i-heroicons-arrow-right-start-on-rectangle-solid"
@@ -314,16 +313,6 @@
       </div>
     </div>
   </div>
-  <div v-if="showLogoutConfirm" :style="styles.overlay">
-    <div :style="styles.modal">
-      <h2>Confirm Logout</h2>
-      <p>Are you sure you want to log out?</p>
-      <div style="margin-top: 20px; display: flex; gap: 10px">
-        <UButton @click="confirmLogout" color="red">Yes, Logout</UButton>
-        <UButton @click="cancelLogout" color="gray">Cancel</UButton>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup>
@@ -374,29 +363,15 @@ const languageSelected = ref("en");
 
 const notificationSelected = ref(true);
 
-const showLogoutConfirm = ref(false);
-
 const mainMenuSelected = ref("");
 function selectMainOption(option) {
-  if (option === "Logout") {
-    showLogoutConfirm.value = true;
-  } else {
-    mainMenuSelected.value = option;
-    secondaryMenuSelected.value = "";
-    tertiaryMenuSelected.value = "";
-  }
+  mainMenuSelected.value = option;
+  secondaryMenuSelected.value = "";
+  tertiaryMenuSelected.value = "";
+
   if (option === "Help") {
     tertiaryMenuSelected.value = "Help";
   }
-}
-
-function confirmLogout() {
-  showLogoutConfirm.value = false;
-  console.log("User logged out");
-}
-
-function cancelLogout() {
-  showLogoutConfirm.value = false;
 }
 
 const secondaryMenuSelected = ref("");
@@ -521,6 +496,8 @@ const styles = {
   color: #ffffff;
   padding: 15px 10px;
   font-size: 18px;
+  width: 100%;
+  text-align: left;
   transition: background-color 0.3s ease;
   display: flex;
   align-items: center;
@@ -637,38 +614,5 @@ const styles = {
   border: none;
   border-top: 1px solid #555555;
   margin-top: 10px 0;
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-
-}
-
-.modal {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  width: 300px;
-}
-
-.modal h2 {
-  margin-top: 0;
-  font-size: 20px;
-}
-
-.modal p {
-  margin: 10px 0 20px;
-  font-size: 16px;
 }
 </style>
