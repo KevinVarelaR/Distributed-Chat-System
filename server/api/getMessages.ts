@@ -9,7 +9,13 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 export default defineEventHandler(async (event) => {
   
-  const { data, error } = await supabase.from('chats').select('*')
+  console.log('Refreshing messages')
+  const userid = 2
+
+  const { data, error } = await supabase
+    .from("chats")
+    .select("*")
+    .or(`usuario1_id.eq.${userid},usuario2_id.eq.${userid}`);
 
   console.log(data)
   
