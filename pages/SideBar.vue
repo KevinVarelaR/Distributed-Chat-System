@@ -28,15 +28,13 @@
         <UButton flat size="lg" @click="showMain" class="w-full text-left" color="cyan">
           <UIcon name="i-el-arrow-left" /> Back
         </UButton>
-        <!-- Aquí puedes agregar la lista de contactos -->
         <ul>
           <li v-for="contact in contacts" :key="contact.id" class="py-2">
             <UCard
               class="text-black shadow-xl min-h-[40px] max-h-[40px] hover:scale-105 hover:bg-slate-100 w-full h-fit flex items-center justify-center">
               <template #header>
                 <div class="flex items-center justify-center w-full font-semibold">
-                  <Placeholder class="h-6" />
-                  {{ contact.name }}
+                  {{ contact.username }}
                 </div>
               </template>
 
@@ -51,12 +49,13 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
+interface Contact {
+  id: number;
+  username: string;
+}
+
 const currentView = ref('main');
-const contacts = ref([
-  { id: 1, name: 'Contact 1' },
-  { id: 2, name: 'Contact 2' },
-  { id: 3, name: 'Contact 3' },
-]);
+let contacts = ref<Contact[]>([]);
 
 const currentUserId = ref(1);
 
@@ -68,15 +67,25 @@ function showMain() {
   currentView.value = 'main';
 }
 
-getChats()
-async function getChats() {
+try {
 
-  const data = await $fetch('/api/getMessages')
+  const response = await fetch('/api/getMessages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      id: currentUserId.value
+    })
+  });
 
+  const data:Contact[] = await response.json();
 
-  console.log(data)
+  contacts.value = data;
 
 }
-
+catch (e) {
+  console.log(e)
+}
 
 </script>
