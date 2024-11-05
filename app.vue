@@ -97,6 +97,48 @@
         </UButton>
       </div>
 
+      <div v-if="mainMenuSelected === 'Contacts'" :style="styles.dynamicMenu">
+        <UButton
+          flat
+          size="lg"
+          class="custom-button-secondary-menu"
+          :full-width="true"
+          :class="{
+            activeSecondaryMenuOption: secondaryMenuSelected === 'All contacts',
+          }"
+          @click="selectSecondaryOption('All contacts')"
+        >
+          <UIcon name="i-heroicons-users-solid" /> All contacts
+        </UButton>
+
+        <UButton
+          flat
+          size="lg"
+          class="custom-button-secondary-menu"
+          :full-width="true"
+          :class="{
+            activeSecondaryMenuOption: secondaryMenuSelected === 'Add contact',
+          }"
+          @click="selectSecondaryOption('Add contact')"
+        >
+          <UIcon name="i-heroicons-user-plus-solid" /> Add contact
+        </UButton>
+
+        <UButton
+          flat
+          size="lg"
+          class="custom-button-secondary-menu"
+          :full-width="true"
+          :class="{
+            activeSecondaryMenuOption:
+              secondaryMenuSelected === 'Delete contact',
+          }"
+          @click="selectSecondaryOption('Delete contact')"
+        >
+          <UIcon name="i-heroicons-user-minus-solid" /> Delete contact
+        </UButton>
+      </div>
+
       <div v-if="mainMenuSelected === 'Settings'" :style="styles.dynamicMenu">
         <UButton
           flat
@@ -252,6 +294,34 @@
           />
         </div>
       </div>
+
+      <div
+        v-if="secondaryMenuSelected === 'All contacts'"
+        :style="contactsGrid"
+      >
+        <div
+          v-for="contact in contacts"
+          :key="contact.id"
+          :style="styles.contactsCard"
+        >
+        <label :style="styles.contactInfo">
+            <img
+              :src="contact.avatar"
+              :alt="contact.name"
+              :style="styles.contactAvatar"
+            />
+            <p>{{ contact.name }}</p>
+          </label>
+          <input
+            type="checkbox"
+            :value="contact.id"
+            :v-model="selectedContacts"
+            :id="'contact-' + contact.id"
+            :style="styles.checkbox"
+          />
+        </div>
+      </div>
+
       <div v-if="secondaryMenuSelected === 'Chats'" :style="styles.dynamicMenu">
         <UButton
           flat
@@ -358,6 +428,16 @@ function generateRandomId(length = 8) {
 onMounted(() => {
   userId.value = "#" + generateRandomId();
 });
+
+const contacts = [
+  { id: 1, name: "Alice", avatar: "https://via.placeholder.com/50" },
+  { id: 2, name: "Bob", avatar: "https://via.placeholder.com/50" },
+  { id: 3, name: "Charlie", avatar: "https://via.placeholder.com/50" },
+  { id: 4, name: "Diana", avatar: "https://via.placeholder.com/50" },
+  { id: 5, name: "Edward", avatar: "https://via.placeholder.com/50" },
+];
+
+const selectedContacts = ref([]);
 
 const languageSelected = ref("en");
 
@@ -473,6 +553,45 @@ const styles = {
     flexDirection: "flex",
     allingItems: "center",
   },
+
+  contactsGrid: {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "20px",
+    marginTop: "20px",
+  },
+
+  contactsCard: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#34495E",
+    padding: "10px",
+    borderRadius: "8px",
+    width: "180px",
+    color: "#ffffff",
+    boxSizing: "border-box",
+  },
+
+  contactInfo: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    flex: 1,
+  },
+
+  contactAvatar: {
+    width: "50px",
+    height: "50px",
+    borderRadius: "50%",
+    marginBottom: "10px",
+  },
+  
+  checkbox: {
+    marginLeft: "10px",
+  },
+
+
 };
 </script>
 
