@@ -19,12 +19,13 @@ interface Message {
 export default defineEventHandler(async (event) => {
 
 
-  const chat_id = 1;
+  const chat_id = await readBody(event);
+  console.log("Chat ID", chat_id.id);
 
   const { data, error } = await supabase
     .from("mensajes")
     .select("*")
-    .eq("chat_id", chat_id)
+    .eq("chat_id", chat_id.id)
     .order("fecha_envio", { ascending: true });
 
 

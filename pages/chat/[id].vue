@@ -26,6 +26,7 @@
 
 <script lang="ts" setup>
 
+import { useRoute } from 'vue-router';
 
 interface Message {
   id: number;
@@ -44,7 +45,8 @@ const messages = ref<Message[]>([]);
 
 const currentUserId = 2;
 const usuarioRemitente = ref<string | null>(null);
-
+const route = useRoute();
+const chatId = route.params.id;
 
 async function getChatInfo() {
   try {
@@ -55,7 +57,7 @@ async function getChatInfo() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        id: 0
+        id: chatId
       })
     });
 
