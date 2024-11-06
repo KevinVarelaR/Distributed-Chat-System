@@ -37,13 +37,49 @@ interface Message {
   fecha_expiracion: string;
 }
 
+const messages = ref<Message[]>([]);
 
-//const messages = ref<Message[]>([]);
 
 
-const currentUserId = 101;
-const usuarioRemitente = "Kevin Varela";
 
+const currentUserId = 2;
+const usuarioRemitente = ref<string | null>(null);
+
+
+async function getChatInfo() {
+  try {
+
+    const response = await fetch('/api/getChatInfo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: 0
+      })
+    });
+
+    const data: Message[] = await response.json();
+
+    messages.value = data;
+
+    console.log(data);
+
+  }
+  catch (e) {
+    console.log(e)
+  }
+
+
+}
+
+onMounted(() => {
+  usuarioRemitente.value = localStorage.getItem('selectedContact');
+  getChatInfo();
+});
+
+
+/*
 
 const messages = ref<Message[]>([
   {
@@ -164,6 +200,8 @@ const messages = ref<Message[]>([
     fecha_expiracion: "",
   },
 ]);
+*/
+
 </script>
 
 <style>

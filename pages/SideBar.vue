@@ -28,17 +28,20 @@
         <UButton flat size="lg" @click="showMain" class="w-full text-left" color="cyan">
           <UIcon name="i-el-arrow-left" /> Back
         </UButton>
-        <ul>
-          <li v-for="contact in contacts" :key="contact.id" class="py-2">
-            <UCard
-              class="text-black shadow-xl min-h-[40px] max-h-[40px] hover:scale-105 hover:bg-slate-100 w-full h-fit flex items-center justify-center">
-              <template #header>
-                <div class="flex items-center justify-center w-full font-semibold">
-                  {{ contact.username }}
-                </div>
-              </template>
+        <ul class="space-y-2">
+          <li v-for="contact in contacts" :key="contact.id" @click="selectContact(contact.id)">
+            <a :href="'/chat/' + contact.id">
+              <UCard :class="{
+              'text-black shadow-xl min-h-[40px] max-h-[40px] cursor-pointer hover:scale-105 hover:bg-slate-100 w-full h-fit flex items-center justify-center': true 
+            }">
+                <template #header>
+                  <div class="flex items-center justify-center w-full font-semibold cursor-pointer">
+                    {{ contact.username }}
+                  </div>
+                </template>
 
-            </UCard>
+              </UCard>
+            </a>
           </li>
         </ul>
       </template>
@@ -49,6 +52,11 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
+//import { useRoute } from 'vue-router';
+
+//const route = useRoute();
+
+
 interface Contact {
   id: number;
   username: string;
@@ -57,7 +65,15 @@ interface Contact {
 const currentView = ref('main');
 let contacts = ref<Contact[]>([]);
 
-const currentUserId = ref(1);
+const currentUserId = ref(2);
+
+const selectContact = (id:number) => {
+  console.log('Selected contact', id);
+  localStorage.setItem('selectedContact', contacts.value.find(c => c.id === id)?.username || '');
+
+}
+
+
 
 function showContacts() {
   currentView.value = 'contacts';
