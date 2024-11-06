@@ -52,9 +52,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-//import { useRoute } from 'vue-router';
 
-//const route = useRoute();
 
 
 interface Contact {
@@ -65,12 +63,12 @@ interface Contact {
 const currentView = ref('main');
 let contacts = ref<Contact[]>([]);
 
-const currentUserId = ref(2);
+const currentUserId = ref(2);    ///Este usuario hay que cambiarlo por el que inicia sesion
 
 const selectContact = (id:number) => {
   console.log('Selected contact', id);
   localStorage.setItem('selectedContact', contacts.value.find(c => c.id === id)?.username || '');
-
+  localStorage.setItem('selectedContactId', currentUserId.value.toString());
 }
 
 

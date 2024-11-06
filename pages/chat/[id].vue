@@ -1,6 +1,8 @@
 <template>
   <div class="p-4 h-screen flex flex-col">
     <h1 class="text-2xl font-bold mb-4">{{ usuarioRemitente }}</h1>
+    <UButton flat size="lg" @click="getChatInfo" class=" mb-8 w-full text-left justify-center" color="cyan"> Refresh (Para que la base no pete)
+    </UButton>
     <div class="flex-1 overflow-y-auto">
       <ul class="space-y-2 flex flex-col">
         <template v-for="(message, index) in messages" :key="message.id">
@@ -20,7 +22,11 @@
         </template>
       </ul>
     </div>
-    <UTextarea class="mt-4" autoresize :maxrows="3" placeholder="Message" color="indigo" model-value="" />
+
+    <div class="flex items-center mt-4">
+      <UTextarea class="flex-1 mr-2" autoresize :maxrows="3" placeholder="Message" color="indigo" v-model="message" />
+      <UButton :ui="{rounded:'rounded-full'}" icon="i-heroicons-paper-airplane"  size="xl" class="flex-shrink-0" color="indigo" @click="sendMessage"></UButton>
+    </div>
   </div>
 </template>
 
@@ -43,10 +49,12 @@ const messages = ref<Message[]>([]);
 
 
 
-const currentUserId = 2;
+const currentUserId = ref(0);
 const usuarioRemitente = ref<string | null>(null);
 const route = useRoute();
 const chatId = route.params.id;
+const message = ref('');
+
 
 async function getChatInfo() {
   try {
@@ -72,137 +80,44 @@ async function getChatInfo() {
     console.log(e)
   }
 
+}
+
+
+async function sendMessage() {
+  try {
+
+    const response = await fetch('/api/sendMessage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        remitente_id: currentUserId.value,
+        texto : message.value,
+        fecha_envio: null,
+        temporal: false,
+        fecha_expiracion: null
+      })
+    });
+
+    await getChatInfo();
+    message.value = '';
+
+  }
+  catch (e) {
+    console.log(e)
+  }
 
 }
 
 onMounted(() => {
   usuarioRemitente.value = localStorage.getItem('selectedContact');
+  currentUserId.value = parseInt(localStorage.getItem('selectedContactId') || '0', 0);
   getChatInfo();
 });
 
 
-/*
-
-const messages = ref<Message[]>([
-  {
-    id: 1,
-    chat_id: 1,
-    remitente_id: 101,
-    texto: "Hola, ¿cómo estás?",
-    fecha_envio: "2024-11-03T10:00:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 2,
-    chat_id: 1,
-    remitente_id: 102,
-    texto: "¡Hola! Muy bien, ¿y tú?",
-    fecha_envio: "2024-11-03T10:05:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 3,
-    chat_id: 1,
-    remitente_id: 101,
-    texto: "Todo bien, gracias. ¿Qué tal tu día?",
-    fecha_envio: "2024-11-03T10:10:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 4,
-    chat_id: 1,
-    remitente_id: 102,
-    texto: "Bastante ocupado, pero bien. ¿Tienes algún plan para hoy?",
-    fecha_envio: "2024-11-03T10:15:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 5,
-    chat_id: 1,
-    remitente_id: 101,
-    texto: "Sí, planeo ir al cine más tarde. ¿Quieres venir?",
-    fecha_envio: "2024-11-03T10:20:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 6,
-    chat_id: 1,
-    remitente_id: 101,
-    texto: "¡Claro! Me encantaría. ¿A qué hora?",
-    fecha_envio: "2024-11-03T10:25:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 7,
-    chat_id: 1,
-    remitente_id: 101,
-    texto: "A las 7 p.m. Nos vemos en la entrada.",
-    fecha_envio: "2024-11-04T10:30:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 9,
-    chat_id: 1,
-    remitente_id: 102,
-    texto: "Perfecto, allí estaré. ¡Nos vemos!",
-    fecha_envio: "2024-11-04T10:35:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 10,
-    chat_id: 1,
-    remitente_id: 102,
-    texto: "Perfecto, allí estaré. ¡Nos vemos!",
-    fecha_envio: "2024-11-04T10:35:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 11,
-    chat_id: 1,
-    remitente_id: 102,
-    texto: "Perfecto, allí estaré. ¡Nos vemos!",
-    fecha_envio: "2024-11-05T10:35:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 12,
-    chat_id: 1,
-    remitente_id: 102,
-    texto: "Perfecto, allí estaré. ¡Nos vemos!",
-    fecha_envio: "2024-11-05T10:35:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 13,
-    chat_id: 1,
-    remitente_id: 102,
-    texto: "Perfecto, allí estaré. ¡Nos vemos!",
-    fecha_envio: "2024-11-06T10:35:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-  {
-    id: 14,
-    chat_id: 1,
-    remitente_id: 101,
-    texto: "Perfecto, allí estaré. ¡Nos vemos!",
-    fecha_envio: "2024-11-07T10:35:00Z",
-    temporal: false,
-    fecha_expiracion: "",
-  },
-]);
-*/
 
 </script>
 
