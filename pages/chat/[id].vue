@@ -111,6 +111,33 @@ async function sendMessage() {
 
 }
 
+async function getMultimedia() {
+  try {
+    const response = await fetch('/api/getMultimedia', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        chat_id: chatId,
+        remitente_id: currentUserId.value,
+        texto: message.value,
+        fecha_envio: null,
+        temporal: false,
+        fecha_expiracion: null
+      })
+    });
+
+
+  }
+  catch (e) {
+    console.log(e)
+  }
+
+}
+
+
+
 onMounted(() => {
   usuarioRemitente.value = localStorage.getItem('selectedContact');
   currentUserId.value = parseInt(localStorage.getItem('selectedContactId') || '0', 0);
