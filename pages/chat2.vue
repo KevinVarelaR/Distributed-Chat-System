@@ -1,7 +1,8 @@
 <template>
   <div class="p-4 h-screen flex flex-col">
-    <h1 class="text-2xl font-bold mb-4">{{ usuarioRemitente }}</h1>
-    <UButton flat size="lg" @click="getMultimedia" class=" mb-8 w-full text-left justify-center" color="cyan"> Refresh (Para que la base no pete)
+    <h1 class="text-2xl font-bold mb-4">Bob</h1>
+    <UButton flat size="lg" @click="getMultimedia" class=" mb-8 w-full text-left justify-center" color="cyan"> Refresh
+      (Para que la base no pete)
     </UButton>
     <div class="flex-1 overflow-y-auto">
       <ul class="space-y-2 flex flex-col">
@@ -25,7 +26,8 @@
 
     <div class="flex items-center mt-4">
       <UTextarea class="flex-1 mr-2" autoresize :maxrows="3" placeholder="Message" color="indigo" v-model="message" />
-      <UButton :ui="{rounded:'rounded-full'}" icon="i-heroicons-paper-airplane"  size="xl" class="flex-shrink-0" color="indigo" @click="sendMessage"></UButton>
+      <UButton :ui="{ rounded: 'rounded-full' }" icon="i-heroicons-paper-airplane" size="xl" class="flex-shrink-0"
+        color="indigo" @click="sendMessage"></UButton>
     </div>
   </div>
 </template>
@@ -34,7 +36,6 @@
 
 import { useRoute } from 'vue-router';
 import { createClient } from '@supabase/supabase-js'
-
 interface Message {
   id: number;
   chat_id: number;
@@ -55,10 +56,12 @@ supabase
   .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensajes' }, getChatInfo)
   .subscribe()
 
+
+
 const currentUserId = ref(0);
 const usuarioRemitente = ref<string | null>(null);
 const route = useRoute();
-const chatId = route.params.id;
+const chatId = "1";
 const message = ref('');
 
 
@@ -100,7 +103,7 @@ async function sendMessage() {
       body: JSON.stringify({
         chat_id: chatId,
         remitente_id: currentUserId.value,
-        texto : message.value,
+        texto: message.value,
         fecha_envio: null,
         temporal: false,
         fecha_expiracion: null
@@ -145,8 +148,8 @@ async function getMultimedia() {
 
 
 onMounted(() => {
-  usuarioRemitente.value = localStorage.getItem('selectedContact');
-  currentUserId.value = parseInt(localStorage.getItem('selectedContactId') || '0', 0);
+  usuarioRemitente.value = "2";
+  currentUserId.value = 1;
   getChatInfo();
 });
 
@@ -154,6 +157,4 @@ onMounted(() => {
 
 </script>
 
-<style>
-
-</style>
+<style></style>
