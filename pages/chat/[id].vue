@@ -1,8 +1,7 @@
 <template>
   <div class="p-4 h-screen flex flex-col">
     <h1 class="text-2xl font-bold mb-4">{{ usuarioRemitente }}</h1>
-    <UButton flat size="lg" @click="getMultimedia" class=" mb-8 w-full text-left justify-center" color="cyan"> Refresh (Para que la base no pete)
-    </UButton>
+
     <div class="flex-1 overflow-y-auto">
       <ul class="space-y-2 flex flex-col">
         <template v-for="(message, index) in messages" :key="message.id">
@@ -24,8 +23,21 @@
     </div>
 
     <div class="flex items-center mt-4">
-      <UTextarea class="flex-1 mr-2" autoresize :maxrows="3" placeholder="Message" color="indigo" v-model="message" />
-      <UButton :ui="{rounded:'rounded-full'}" icon="i-heroicons-paper-airplane"  size="xl" class="flex-shrink-0" color="indigo" @click="sendMessage"></UButton>
+      <UButton @click="isOpen=true" color="teal" icon="i-heroicons-paper-clip" size="xl" :ui="{rounded: 'rounded-full'}"
+        class="mr-2" />
+      <UModal v-model="isOpen" :overlay="false">
+        <div class="p-4">
+          <Input type="file" @change="handleFileChange" icon="i-heroicons-folder" color="cyan"  class="mb-4" />
+          <UButton flat size="lg" @click="uploadImage" class=" mb-8 w-full text-left justify-center" color="cyan">
+            Subir archivo
+          </UButton>
+          <img v-if="imageUrl" :src="imageUrl" alt="Selected Image" class="h-48 w-auto" />
+          
+        </div>
+      </UModal>
+      <UTextarea class="flex-1 mr-2" autoresize :maxrows="3" placeholder="Message" color="teal" @keyup.enter="sendMessage" v-model="message" />
+      <UButton :ui="{rounded:'rounded-full'}" icon="i-heroicons-paper-airplane" size="xl" class="flex-shrink-0"
+        color="teal" @click="sendMessage"></UButton>
     </div>
   </div>
 </template>
@@ -48,7 +60,7 @@ interface Message {
 const messages = ref<Message[]>([]);
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY || '';
+const supabaseKey = import.meta.env.VITE_SUPABASE_MULTIMEDIA || '';
 const supabase = createClient(supabaseUrl, supabaseKey)
 supabase
   .channel('todos')
@@ -60,7 +72,8 @@ const usuarioRemitente = ref<string | null>(null);
 const route = useRoute();
 const chatId = route.params.id;
 const message = ref('');
-
+const isOpen = ref(false);
+const imageUrl = ref<string | null>(null);
 
 async function getChatInfo() {
   try {
@@ -79,7 +92,6 @@ async function getChatInfo() {
 
     messages.value = data;
 
-    console.log(data);
 
   }
   catch (e) {
@@ -91,6 +103,10 @@ async function getChatInfo() {
 
 async function sendMessage() {
   try {
+
+    if (message.value.trim() === '') {
+      return;
+    }
 
     const response = await fetch('/api/sendMessage', {
       method: 'POST',
@@ -143,6 +159,30 @@ async function getMultimedia() {
 }
 
 
+const selectedFile = ref<File | null>(null);
+function handleFileChange(event: Event) {
+  const target = event.target as HTMLInputElement;
+  if (target.files && target.files[0]) {
+    selectedFile.value = target.files[0];
+  }
+}
+
+async function uploadImage() {
+  if (!selectedFile.value) {
+    alert('Please select a file first.');
+    return;
+  }
+
+  const { data, error } = await supabase.storage
+    .from('multimedia')
+    .upload(`uploads/${selectedFile.value.name}`, selectedFile.value);
+
+  if (error) {
+    console.error('Error uploading file:', error);
+  } else {
+    console.log('File uploaded successfully:', data);
+  }
+}
 
 onMounted(() => {
   usuarioRemitente.value = localStorage.getItem('selectedContact');
