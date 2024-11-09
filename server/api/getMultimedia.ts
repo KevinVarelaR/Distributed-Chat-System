@@ -20,12 +20,15 @@ export default defineEventHandler(async (event) => {
 
   //testing();
 
-  const { data, error } = await supabase.storage.from("multimedia").list();
+  //const { data, error } = await supabase.storage.from("multimedia").list("1");
   
-  //const {data, error} = await supabase.storage.from("multimedia").upload("test.jpg", new Blob(["test"]));
+  const { data } =  supabase.storage
+    .from("multimedia")
+    .getPublicUrl("1/AmongUs.png");
+
 
   console.log("multimedia", data);
-  console.log("error", error);
+  //console.log("error", error);
 
   return data;
 });

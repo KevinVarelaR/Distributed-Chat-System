@@ -16,26 +16,30 @@
               <strong>{{ message.remitente_id }}</strong>
               <span class="text-sm text-gray-500">{{ new Date(message.fecha_envio).toLocaleTimeString() }}</span>
             </div>
-            <p>{{ message.texto }}</p>
+            <div v-if="message.multimedia">
+              <img :src="message.texto" alt="Multimedia content" class="max-w-full h-auto rounded" />
+            </div>
+            <p v-else>{{ message.texto }}</p>
           </li>
         </template>
       </ul>
     </div>
-
     <div class="flex items-center mt-4">
       <UButton @click="isOpen=true" color="teal" icon="i-heroicons-paper-clip" size="xl" :ui="{rounded: 'rounded-full'}"
         class="mr-2" />
-      <UModal v-model="isOpen" :overlay="false">
-        <div class="p-4">
-          <Input type="file" @change="handleFileChange" icon="i-heroicons-folder" color="cyan"  class="mb-4" />
-          <UButton flat size="lg" @click="uploadImage" class=" mb-8 w-full text-left justify-center" color="cyan">
+      <UModal v-model="isOpen" :overlay="false" prevent-close>
+        <div class="p-4 relative">
+          <UButton icon="i-heroicons-x-mark" color="gray" variant="ghost" size="sm" class="absolute top-2 right-2"
+            @click="isOpen = false" />
+          <Input type="file" @change="handleFileChange" icon="i-heroicons-folder" color="cyan" class="mb-4" />
+          <img v-if="imageUrl" :src="imageUrl" alt="Vista previa no disponible" class="h-48 w-auto" />
+          <UButton flat size="lg" @click="uploadImage" class="mt-8  mb-8 w-full text-left justify-center" color="cyan">
             Subir archivo
           </UButton>
-          <img v-if="imageUrl" :src="imageUrl" alt="Selected Image" class="h-48 w-auto" />
-          
         </div>
       </UModal>
-      <UTextarea class="flex-1 mr-2" autoresize :maxrows="3" placeholder="Message" color="teal" @keyup.enter="sendMessage" v-model="message" />
+      <UTextarea class="flex-1 mr-2" autoresize :maxrows="3" placeholder="Message" color="teal"
+        @keyup.enter="sendMessage" v-model="message" />
       <UButton :ui="{rounded:'rounded-full'}" icon="i-heroicons-paper-airplane" size="xl" class="flex-shrink-0"
         color="teal" @click="sendMessage"></UButton>
     </div>
@@ -55,6 +59,7 @@ interface Message {
   fecha_envio: string;
   temporal: boolean;
   fecha_expiracion: string;
+  multimedia: boolean;
 }
 
 const messages = ref<Message[]>([]);
@@ -74,6 +79,7 @@ const chatId = route.params.id;
 const message = ref('');
 const isOpen = ref(false);
 const imageUrl = ref<string | null>(null);
+const multimedia = ref(false);
 
 async function getChatInfo() {
   try {
@@ -104,7 +110,10 @@ async function getChatInfo() {
 async function sendMessage() {
   try {
 
-    if (message.value.trim() === '') {
+    if (isOpen.value) {
+      
+    }
+    else if (message.value.trim() === '') {
       return;
     }
 
@@ -119,12 +128,14 @@ async function sendMessage() {
         texto : message.value,
         fecha_envio: null,
         temporal: false,
-        fecha_expiracion: null
+        fecha_expiracion: null,
+        multimedia: multimedia.value,
       })
     });
 
     await getChatInfo();
     message.value = '';
+    multimedia.value = false;
 
   }
   catch (e) {
@@ -164,6 +175,7 @@ function handleFileChange(event: Event) {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files[0]) {
     selectedFile.value = target.files[0];
+    imageUrl.value = URL.createObjectURL(selectedFile.value);
   }
 }
 
@@ -175,12 +187,18 @@ async function uploadImage() {
 
   const { data, error } = await supabase.storage
     .from('multimedia')
-    .upload(`uploads/${selectedFile.value.name}`, selectedFile.value);
-
+    .upload(`${chatId}/${selectedFile.value.name + Date.now()}`, selectedFile.value);
+    
   if (error) {
     console.error('Error uploading file:', error);
   } else {
     console.log('File uploaded successfully:', data);
+    
+    multimedia.value = true;
+    message.value = data.path;
+    await sendMessage();
+    imageUrl.value = null;
+    isOpen.value = false;
   }
 }
 
