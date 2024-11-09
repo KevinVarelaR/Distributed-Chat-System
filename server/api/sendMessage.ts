@@ -16,10 +16,22 @@ interface Message {
   multimedia : boolean;
 }
 
+function getURL(chat_id: number, texto: string) {
+
+  const { data } = supabase.storage
+    .from("multimedia")
+    .getPublicUrl(`${texto}`);
+  return data.publicUrl;
+
+}
+
+
 export default defineEventHandler(async (event) => {
   const message: Message = await readBody(event);
 
-
+  if (message.multimedia) {
+    message.texto = getURL(message.chat_id, message.texto);
+  }
   
   const { data, error } = await supabase.from("mensajes").insert([
     {

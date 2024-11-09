@@ -17,9 +17,14 @@
               <span class="text-sm text-gray-500">{{ new Date(message.fecha_envio).toLocaleTimeString() }}</span>
             </div>
             <div v-if="message.multimedia">
-              <img :src="message.texto" alt="Multimedia content" class="max-w-full h-auto rounded" />
+              <template v-if="isImage(message.texto)">
+                <img :src="message.texto" alt="Multimedia content" class="h-auto rounded max-w-xs max-h-48" />
+              </template>
+              <template v-else>
+                <a :href="message.texto" target="_blank" class="text-blue-500 underline">archivoAdjunto </a>
+              </template>
             </div>
-            <p v-else>{{ message.texto }}</p>
+              <p v-else>{{ message.texto }}</p>
           </li>
         </template>
       </ul>
@@ -200,6 +205,10 @@ async function uploadImage() {
     imageUrl.value = null;
     isOpen.value = false;
   }
+}
+
+function isImage(url: string): boolean {
+  return /\.(jpg|jpeg|png|gif|bmp)$/i.test(url);
 }
 
 onMounted(() => {

@@ -22,6 +22,8 @@ export default defineEventHandler(async (event) => {
 
   //const { data, error } = await supabase.storage.from("multimedia").list("1");
   
+  
+
   const { data } =  supabase.storage
     .from("multimedia")
     .getPublicUrl("1/AmongUs.png");
