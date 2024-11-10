@@ -109,7 +109,7 @@ function showContacts() {
 
 try {
 
-  const response = await fetch('/api/getMessages', {
+  const response = await $fetch('/api/getMessages', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -119,7 +119,7 @@ try {
     })
   });
 
-  const data:Contact[] = await response.json();
+  const data:Contact[] = response as Contact[];
 
   messages.value = data;
 
@@ -130,7 +130,7 @@ catch (e) {
 
 try {
   
-    const response = await fetch('/api/getContacts', {
+    const response = await $fetch('/api/getContacts', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -140,7 +140,7 @@ try {
       })
     });
   
-    const data:Contact[] = await response.json();
+    const data:Contact[] = response as Contact[];
   
     contacts.value = data;
   

@@ -43,6 +43,6 @@ export default defineEventHandler(async (event) => {
       multimedia: message.multimedia,
     },
   ]);
-  console.log("Messages", data);
+
   return data || [];
 });

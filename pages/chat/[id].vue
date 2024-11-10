@@ -36,7 +36,7 @@
         <div class="p-4 relative">
           <UButton icon="i-heroicons-x-mark" color="gray" variant="ghost" size="sm" class="absolute top-2 right-2"
             @click="isOpen = false" />
-          <Input type="file" @change="handleFileChange" icon="i-heroicons-folder" color="cyan" class="mb-4" />
+          <input type="file" @change="handleFileChange" icon="i-heroicons-folder" color="cyan" class="mb-4" />
           <img v-if="imageUrl" :src="imageUrl" alt="Vista previa no disponible" class="h-48 w-auto" />
           <UButton flat size="lg" @click="uploadImage" class="mt-8  mb-8 w-full text-left justify-center" color="cyan">
             Subir archivo

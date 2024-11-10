@@ -7,12 +7,6 @@ const supabaseKey = process.env.VITE_SUPABASE_MULTIMEDIA || "";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 
-async function testing() {
-
-  const { data, error } = await supabase.from("mensajes").select("*");
-
-  console.log("multimedia", data);
-}
 
 
 export default defineEventHandler(async (event) => {
@@ -29,7 +23,7 @@ export default defineEventHandler(async (event) => {
     .getPublicUrl("1/AmongUs.png");
 
 
-  console.log("multimedia", data);
+
   //console.log("error", error);
 
   return data;
