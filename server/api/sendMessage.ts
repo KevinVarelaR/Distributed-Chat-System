@@ -16,7 +16,7 @@ interface Message {
   multimedia : boolean;
 }
 
-function getURL(chat_id: number, texto: string) {
+function getURL(texto: string) {
 
   const { data } = supabase.storage
     .from("multimedia")
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
   const message: Message = await readBody(event);
 
   if (message.multimedia) {
-    message.texto = getURL(message.chat_id, message.texto);
+    message.texto = getURL(message.texto);
   }
   
   const { data, error } = await supabase.from("mensajes").insert([
