@@ -12,6 +12,9 @@
         <UButton flat size="lg" @click="showContacts" class="w-full text-left" color="blue">
           <UIcon name="i-el-address-book" /> Contacts
         </UButton>
+        <UButton flat size="lg" @click="showBots" class="w-full text-left" color="pink">
+          <UIcon name="i-heroicons-cog" /> Bots
+        </UButton>
         <UButton flat size="lg" to="/SettingsMenu" class="w-full text-left" color="purple">
           <UIcon name="i-heroicons-wrench-screwdriver-20-solid" /> Settings
         </UButton>
@@ -39,7 +42,28 @@
                     {{ contact.username }}
                   </div>
                 </template>
+              </UCard>
+            </a>
+          </li>
+        </ul>
+      </template>
 
+      <template v-else-if="currentView === 'bots'">
+        <h2 class="text-xl font-bold">Bots</h2>
+        <UButton flat size="lg" @click="showMain" class="w-full text-left" color="cyan">
+          <UIcon name="i-el-arrow-left" /> Back
+        </UButton>
+        <ul class="space-y-2">
+          <li v-for="bot in bots" :key="bot.id" @click="selectBot(bot.id)">
+            <a :href="'/bot/' + bot.id">
+              <UCard :class="{
+                'text-black shadow-xl min-h-[40px] max-h-[40px] cursor-pointer hover:scale-105 hover:bg-slate-100 w-full h-fit flex items-center justify-center': true
+              }">
+                <template #header>
+                  <div class="flex items-center justify-center w-full font-semibold cursor-pointer">
+                    {{ bot.name }}
+                  </div>
+                </template>
               </UCard>
             </a>
           </li>
@@ -60,8 +84,18 @@ interface Contact {
   username: string;
 }
 
+interface Bot {
+  id: number;
+  name: string;
+}
+
 const currentView = ref('main');
 let contacts = ref<Contact[]>([]);
+let bots = ref<Bot[]>([
+  { id: 997, name: 'Reminders' },
+  { id: 998, name: 'Climate' },
+  { id: 999, name: 'Todifine' },
+]);
 
 const currentUserId = ref(2);    ///Este usuario hay que cambiarlo por el que inicia sesion
 
@@ -71,7 +105,11 @@ const selectContact = (id:number) => {
   localStorage.setItem('selectedContactId', currentUserId.value.toString());
 }
 
-
+const selectBot = (bot: number) => {
+  console.log('Selected bot', bot);
+  localStorage.setItem('selectedBot', JSON.stringify(bot));
+  localStorage.setItem('selectedContactId', currentUserId.value.toString());
+}
 
 function showContacts() {
   currentView.value = 'contacts';
@@ -79,6 +117,10 @@ function showContacts() {
 
 function showMain() {
   currentView.value = 'main';
+}
+
+function showBots() {
+  currentView.value = 'bots';
 }
 
 try {
