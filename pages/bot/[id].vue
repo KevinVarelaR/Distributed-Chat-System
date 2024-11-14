@@ -1,8 +1,6 @@
 <template>
   <div class="p-4 h-screen flex flex-col">
     <h1 class="text-2xl font-bold mb-4">{{ botRemitente }}</h1>
-    <UButton flat size="lg" @click="getChatInfo" class=" mb-8 w-full text-left justify-center" color="cyan"> Refresh(Para que la base no pete)
-    </UButton>
     <div class="flex-1 overflow-y-auto">
       <ul class="space-y-2 flex flex-col">
         <template v-for="(message, index) in messages" :key="message.id">
