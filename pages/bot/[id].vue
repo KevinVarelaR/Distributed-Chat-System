@@ -86,7 +86,7 @@ async function getChatInfo() {
 
 async function sendMessage() {
   try {
-    const response = await fetch('/api/sendMessage', {
+    const response = await fetch('/api/sendBotMessage', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
