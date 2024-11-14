@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
 
   const currentUser: Chat = await readBody(event);
 
-  console.log("User ID", currentUser.id);
+
 
 
 
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
   }
 
 
-  console.log("Messages", messages);
+
   return messages;
 
 

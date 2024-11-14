@@ -24,19 +24,19 @@
                 <a :href="message.texto" target="_blank" class="text-blue-500 underline">archivoAdjunto </a>
               </template>
             </div>
-              <p v-else>{{ message.texto }}</p>
+            <p v-else>{{ message.texto }}</p>
           </li>
         </template>
       </ul>
     </div>
     <div class="flex items-center mt-4">
-      <UButton @click="isOpen=true" color="teal" icon="i-heroicons-paper-clip" size="xl" :ui="{rounded: 'rounded-full'}"
+      <UButton @click="isOpen = true" color="teal" icon="i-heroicons-paper-clip" size="xl" :ui="{ rounded: 'rounded-full' }"
         class="mr-2" />
       <UModal v-model="isOpen" :overlay="false" prevent-close>
         <div class="p-4 relative">
           <UButton icon="i-heroicons-x-mark" color="gray" variant="ghost" size="sm" class="absolute top-2 right-2"
             @click="isOpen = false" />
-          <input type="file" @change="handleFileChange" icon="i-heroicons-folder" color="cyan" class="mb-4" />
+          <Input type="file" @change="handleFileChange" icon="i-heroicons-folder" color="cyan" class="mb-4" />
           <img v-if="imageUrl" :src="imageUrl" alt="Vista previa no disponible" class="h-48 w-auto" />
           <UButton flat size="lg" @click="uploadImage" class="mt-8  mb-8 w-full text-left justify-center" color="cyan">
             Subir archivo
@@ -45,7 +45,7 @@
       </UModal>
       <UTextarea class="flex-1 mr-2" autoresize :maxrows="3" placeholder="Message" color="teal"
         @keyup.enter="sendMessage" v-model="message" />
-      <UButton :ui="{rounded:'rounded-full'}" icon="i-heroicons-paper-airplane" size="xl" class="flex-shrink-0"
+      <UButton :ui="{ rounded: 'rounded-full' }" icon="i-heroicons-paper-airplane" size="xl" class="flex-shrink-0"
         color="teal" @click="sendMessage"></UButton>
     </div>
   </div>
@@ -80,7 +80,7 @@ supabase
 const currentUserId = ref(0);
 const usuarioRemitente = ref<string | null>(null);
 const route = useRoute();
-const chatId = route.params.id;
+const chatId = 1
 const message = ref('');
 const isOpen = ref(false);
 const imageUrl = ref<string | null>(null);
@@ -116,7 +116,7 @@ async function sendMessage() {
   try {
 
     if (isOpen.value) {
-      
+
     }
     else if (message.value.trim() === '') {
       return;
@@ -130,7 +130,7 @@ async function sendMessage() {
       body: JSON.stringify({
         chat_id: chatId,
         remitente_id: currentUserId.value,
-        texto : message.value,
+        texto: message.value,
         fecha_envio: null,
         temporal: false,
         fecha_expiracion: null,
@@ -170,12 +170,12 @@ async function uploadImage() {
   const { data, error } = await supabase.storage
     .from('multimedia')
     .upload(`${chatId}/${selectedFile.value.name + Date.now()}`, selectedFile.value);
-    
+
   if (error) {
     console.error('Error uploading file:', error);
   } else {
     console.log('File uploaded successfully:', data);
-    
+
     multimedia.value = true;
     message.value = data.path;
     await sendMessage();
@@ -189,8 +189,8 @@ function isImage(url: string): boolean {
 }
 
 onMounted(() => {
-  usuarioRemitente.value = localStorage.getItem('selectedContact');
-  currentUserId.value = parseInt(localStorage.getItem('selectedContactId') || '0', 0);
+  usuarioRemitente.value = "2"
+  currentUserId.value = 1
   getChatInfo();
 });
 
@@ -198,6 +198,4 @@ onMounted(() => {
 
 </script>
 
-<style>
-
-</style>
+<style></style>

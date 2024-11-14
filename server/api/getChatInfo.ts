@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
     .order("fecha_envio", { ascending: true });
 
 
-  console.log("Messages", data);
+
   return data || [];
 
 
