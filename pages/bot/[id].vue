@@ -151,7 +151,7 @@ async function botResponse(mensaje: string) {
 
 onMounted(async () => {
   botRemitente.value = localStorage.getItem('selectedBot');
-  currentUserId.value = parseInt(localStorage.getItem('selectedContactId') || '0', 0);
+  currentUserId.value = parseInt(localStorage.getItem('currentUserId') || '0', 0);
   chatId = await getChats();
   getChatInfo();
 });

@@ -190,7 +190,7 @@ function isImage(url: string): boolean {
 
 onMounted(() => {
   usuarioRemitente.value = localStorage.getItem('selectedContact');
-  currentUserId.value = parseInt(localStorage.getItem('selectedContactId') || '0', 0);
+  currentUserId.value = parseInt(localStorage.getItem('currentUserId') || '0', 0);
   getChatInfo();
 });
 

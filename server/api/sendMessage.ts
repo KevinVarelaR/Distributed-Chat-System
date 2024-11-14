@@ -18,6 +18,7 @@ interface Message {
 export default defineEventHandler(async (event) => {
   const message: Message = await readBody(event);
 
+  console.log("Message", message);
 
   const { data, error } = await supabase.from("mensajes").insert([
     {

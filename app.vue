@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-screen">
-    <SideBar class="w-1/5" /> <!-- Ajusta el ancho de la SideBar -->
-    <div class="flex-1">
+    <SideBar v-if="showSideBar" class="w-1/5" /> <!-- Ajusta el ancho de la SideBar -->
+    <div :class="showSideBar ? 'flex-1' : 'w-full'">
       <NuxtPage />
       <UNotifications />
     </div>
@@ -9,5 +9,9 @@
 </template>
 
 <script lang="ts" setup>
+import { useRoute } from 'vue-router';
 import SideBar from './pages/SideBar.vue';
+
+const route = useRoute();
+const showSideBar = route.path !== '/login' && route.path !== '/register';
 </script>

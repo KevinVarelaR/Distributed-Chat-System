@@ -120,7 +120,7 @@ let bots = ref<Bot[]>([
   { id: 999, name: 'Todifine' },
 ]);
 
-const currentUserId = ref(2);    ///Este usuario hay que cambiarlo por el que inicia sesion
+const currentUserId = ref("0");    ///Este usuario hay que cambiarlo por el que inicia sesion
 
 const selectContact = (id:number) => {
   console.log('Selected contact', id);
@@ -149,29 +149,34 @@ function showContacts() {
   currentView.value = 'contacts';
 }
 
-try {
 
-  const response = await $fetch('/api/getMessages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      id: currentUserId.value
-    })
-  });
+ onMounted(async() => {
+  console.log('SideBar mounted')
+  const currentUserId = ref(localStorage.getItem('currentUserId') || "0");
 
-  const data:Contact[] = response as Contact[];
+  try {
 
-  messages.value = data;
+    const response = await $fetch('/api/getMessages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        id: currentUserId.value
+      })
+    });
 
-}
-catch (e) {
-  console.log(e)
-}
+    const data: Contact[] = response as Contact[];
 
-try {
-  
+    messages.value = data;
+
+  }
+  catch (e) {
+    console.log(e)
+  }
+
+  try {
+
     const response = await $fetch('/api/getContacts', {
       method: 'POST',
       headers: {
@@ -181,15 +186,15 @@ try {
         id: currentUserId.value
       })
     });
-  
-    const data:Contact[] = response as Contact[];
-  
+
+    const data: Contact[] = response as Contact[];
+
     contacts.value = data;
-  
+
   }
   catch (e) {
     console.log(e)
-}
-
+  }
+})
 
 </script>

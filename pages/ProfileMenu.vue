@@ -36,8 +36,8 @@
 <script lang="ts" setup>
 
 const profileImage = 'https://avatars.githubusercontent.com/u/102042795?v=4'
-const username = 'John Doe'
-const userId = '1'
+const username = ref('')
+const userId = ref('')
 const isOpen = ref(false)
 
 const editProfile = ref(true)
@@ -51,6 +51,12 @@ function handleAvatarClick() {
 function changeEditProfile() {
   editProfile.value = !editProfile.value
 }
+
+onMounted(() => {
+  console.log('ProfileMenu mounted')
+  username.value = localStorage.getItem('userName') || 'error'
+  userId.value = localStorage.getItem('currentUserId') || '00000000'
+})
 
 
 </script>
