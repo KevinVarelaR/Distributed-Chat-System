@@ -33,6 +33,7 @@
 <script lang="ts" setup>
 
 import { useRoute } from 'vue-router';
+import { createClient } from '@supabase/supabase-js'
 
 interface Message {
   id: number;
@@ -46,7 +47,13 @@ interface Message {
 
 const messages = ref<Message[]>([]);
 
-
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseKey = import.meta.env.VITE_SUPABASE_MULTIMEDIA || '';
+const supabase = createClient(supabaseUrl, supabaseKey)
+supabase
+  .channel('todos')
+  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensajes' }, getChatInfo)
+  .subscribe()
 
 
 const currentUserId = ref(0);
