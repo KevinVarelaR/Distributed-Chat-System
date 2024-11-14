@@ -25,14 +25,21 @@ function getURL(texto: string) {
 
 }
 
+async function createChatId(chat_id: number, remitente_id: number) {
 
-export default defineEventHandler(async (event) => {
-  const message: Message = await readBody(event);
-
-  if (message.multimedia) {
-    message.texto = getURL(message.texto);
-  }
   
+  const { data, error } = await supabase.from("chats").insert([
+    {
+      usuario1_id: chat_id,
+      usuario2_id: remitente_id,
+    },
+  ]);
+
+
+  return {data, error};
+}
+
+async function sendMessage(message: Message) {
   const { data, error } = await supabase.from("mensajes").insert([
     {
       chat_id: message.chat_id,
@@ -44,5 +51,22 @@ export default defineEventHandler(async (event) => {
     },
   ]);
 
-  return data || [];
+  return {data, error};
+}
+
+
+export default defineEventHandler(async (event) => {
+  const message: Message = await readBody(event);
+
+  if (message.multimedia) {
+    message.texto = getURL(message.texto);
+  }
+  
+  const response = await sendMessage(message);
+  if (response.error) {
+    createChatId(message.chat_id, message.remitente_id);
+    
+    sendMessage(message);
+  }
+  return response.data || [];
 });
