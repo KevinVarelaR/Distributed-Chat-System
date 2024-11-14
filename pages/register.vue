@@ -65,9 +65,10 @@ async function register() {
       <div v-if="error" class="mb-8 font-semibold">
         <p class="text-red-500">{{errorType}}</p>
       </div>
-      <UButton @click="register" block color="blue" class="w-full"
+      <UButton @click="register" disabled block color="blue" class="w-full"
         >Registrarse</UButton
-      >
+        >
+        <h1 class="font-bold mt-8 flex items-center justify-center">...WIP...</h1>
       <div class="text-center mt-4">
         <ULink to="/login" class="text-blue-500"
           >¿Ya tienes una cuenta? Inicia Sesión</ULink

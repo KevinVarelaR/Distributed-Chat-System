@@ -18,7 +18,7 @@
         <UButton flat size="lg" to="/SettingsMenu" class="w-full text-left" color="purple">
           <UIcon name="i-heroicons-wrench-screwdriver-20-solid" /> Settings
         </UButton>
-        <UButton flat size="lg" class="w-full text-left" color="red">
+        <UButton flat size="lg" @click="logOut" class="w-full text-left" color="red">
           <UIcon name="i-heroicons-arrow-right-start-on-rectangle-solid" size="23" />
           Logout
         </UButton>
@@ -96,7 +96,9 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 
 
 
@@ -147,6 +149,14 @@ function showBots() {
 }
 function showContacts() {
   currentView.value = 'contacts';
+}
+
+async function logOut(){
+
+  localStorage.clear();
+  await router.push('/login').then(() => {
+    location.reload();
+  });
 }
 
 
