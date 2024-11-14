@@ -27,7 +27,7 @@
       We'd like to know your thoughts about this app.
     </p>
     <p>
-      <a href="mailto:@gmail.com" class="contact-link ml-2"> Contact Fabián Rojas</a>
+      <a href="mailto:fabianrojasugalde@gmail.com" class="contact-link ml-2"> Contact Fabián Rojas</a>
     </p>
     <p>
       <a href="mailto:kevin03varela@gmail.com" class="contact-link ml-2">

@@ -70,7 +70,7 @@ interface Contact {
 
 const currentView = ref('main');
 let contacts = ref<Contact[]>([]);
-const currentUserId = ref(1);
+const currentUserId = ref(localStorage.getItem("userID") || "");
 const emit = defineEmits();
 const showLogoutDialog = ref(false);
 
